@@ -1,0 +1,22 @@
+# Environment variables & secrets
+.env
+.env.local
+web/.env.local
+
+# Saves & Game server data (2+ GB game files)
+saves/
+server/
+scripts/.last_status.json
+
+# Binaries
+bin/depotdownloader/
+bin/depotdownloader-arm64/
+
+# Web dependencies and build outputs
+web/node_modules/
+web/.next/
+web/out/
+
+# OS & Logs
+.DS_Store
+*.log

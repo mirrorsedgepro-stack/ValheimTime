@@ -1,0 +1,14 @@
+services:
+  valheim:
+    image: tsxcloud/valheim-arm:latest
+    container_name: valheim-server
+    restart: unless-stopped
+    stop_grace_period: 2m
+    ports:
+      - "${SERVER_PORT:-2456}-2458:2456-2458/udp"
+    env_file:
+      - .env
+    volumes:
+      - ./server:/root/valheim-server
+      - ./saves:/root/.config/unity3d/IronGate/Valheim
+      - ./bin/steamcmd_wrapper_arm.sh:/usr/local/bin/steamcmd.sh:ro

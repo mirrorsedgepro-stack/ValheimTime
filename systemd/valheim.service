@@ -1,0 +1,18 @@
+[Unit]
+Description=Valheim Dedicated Server (Docker Compose)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/jcee-slave/Valheim
+User=jcee-slave
+Group=jcee-slave
+ExecStart=/usr/bin/docker compose up -d
+ExecStop=/usr/bin/docker compose stop
+TimeoutStopSec=180
+
+[Install]
+WantedBy=multi-user.target

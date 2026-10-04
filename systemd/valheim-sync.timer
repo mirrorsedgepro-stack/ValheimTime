@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Valheim Server Status Webhook Sync Every Minute
+Requires=valheim-sync.service
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

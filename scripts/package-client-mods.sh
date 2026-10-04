@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SERVER_DIR="${PROJECT_DIR}/server"
+WEB_DIR="${PROJECT_DIR}/web"
+DOWNLOADS_DIR="${WEB_DIR}/public/downloads"
+OUTPUT_ZIP="${DOWNLOADS_DIR}/valheim-modpack.zip"
+MANIFEST_JSON="${DOWNLOADS_DIR}/manifest.json"
+
+echo "=========================================="
+echo "    Packaging Valheim Client Modpack      "
+echo "=========================================="
+
+mkdir -p "${DOWNLOADS_DIR}"
+
+if [ ! -d "${SERVER_DIR}/BepInEx" ]; then
+    echo "Error: BepInEx folder not found in ${SERVER_DIR}"
+    exit 1
+fi
+
+echo "Creating client modpack zip..."
+rm -f "${OUTPUT_ZIP}"
+
+cd "${SERVER_DIR}"
+
+# Include winhttp.dll, doorstop_config.ini, doorstop_libs, and BepInEx (core, plugins, config)
+# Exclude runtime log files and temp caches
+zip -r9 "${OUTPUT_ZIP}" \
+    winhttp.dll \
+    doorstop_config.ini \
+    doorstop_libs \
+    BepInEx/core \
+    BepInEx/plugins \
+    BepInEx/config \
+    -x "*.log" -x "BepInEx/cache/*" -x "*/.DS_Store"
+
+echo ""
+echo "Calculating sha256 checksum..."
+CHECKSUM=$(sha256sum "${OUTPUT_ZIP}" | awk '{print $1}')
+FILESIZE=$(ls -lh "${OUTPUT_ZIP}" | awk '{print $5}')
+
+echo "Modpack successfully created!"
+echo "Destination: ${OUTPUT_ZIP}"
+echo "Size: ${FILESIZE}"
+echo "SHA256: ${CHECKSUM}"
+
+# Generate client manifest with installed mod list for the website UI
+cat <<EOF > "${MANIFEST_JSON}"
+{
+  "name": "Odin's Hall Client Modpack",
+  "version": "1.0.0",
+  "generatedAt": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "fileSize": "${FILESIZE}",
+  "sha256": "${CHECKSUM}",
+  "downloadPath": "/downloads/valheim-modpack.zip",
+  "bepinexVersion": "5.4.23.3",
+  "mods": [
+    {
+      "name": "Adventure Backpacks",
+      "package": "Vapok-AdventureBackpacks",
+      "version": "2.2.9",
+      "category": "Equipment",
+      "description": "Craftable, upgradeable, and wearable backpacks with dedicated inventory slots, weight reduction, and biome protection effects."
+    },
+    {
+      "name": "Balrond Dual Mastery",
+      "package": "balrond-DualMastery",
+      "version": "0.3.10",
+      "category": "Combat",
+      "description": "Adds dual-wielding weapon mechanics, custom combat animations, and a new Dual Wielding skill progression."
+    },
+    {
+      "name": "Build On Ship",
+      "package": "Searica-BuildOnShip",
+      "version": "4.0.0",
+      "category": "Building & Sailing",
+      "description": "Enables placing chests, crafting tables, lights, and custom pieces directly onto ships and carts."
+    },
+    {
+      "name": "Conditional Config Sync",
+      "package": "shudnal-ConditionalConfigSync",
+      "version": "1.0.10",
+      "category": "Core & Sync",
+      "description": "Server-to-client configuration synchronization engine enforcing consistent gameplay rules across players."
+    },
+    {
+      "name": "Valheim Configuration Manager",
+      "package": "shudnal-ConfigurationManager",
+      "version": "1.1.23",
+      "category": "Utility",
+      "description": "In-game settings menu. Press F1 in-game to tweak client settings, keybinds, and visual mod options live."
+    },
+    {
+      "name": "Craft From Chests",
+      "package": "toxo-CraftFromChests",
+      "version": "0.4.0",
+      "category": "Quality of Life",
+      "description": "Craft, build, and repair items directly using ingredients stored in nearby chests within range."
+    },
+    {
+      "name": "Crop Utils",
+      "package": "CropUtils",
+      "version": "2.1.1",
+      "category": "Farming",
+      "description": "Grid planting and bulk harvest helpers for farming carrots, turnips, onions, and barley smoothly."
+    },
+    {
+      "name": "Easy Relocate",
+      "package": "ModdedWolf-EasyRelocate",
+      "version": "1.1.1",
+      "category": "Building",
+      "description": "Pick up, move, and rotate pre-built furniture, chests, and structures without deconstructing them."
+    },
+    {
+      "name": "Extra Slots",
+      "package": "shudnal-ExtraSlots",
+      "version": "1.2.16",
+      "category": "Inventory",
+      "description": "Dedicated equipment slots for armor, cape, utility items, and quick-access potion slots."
+    },
+    {
+      "name": "HUD Compass",
+      "package": "neobotics-HUDCompass",
+      "version": "1.2.0",
+      "category": "UI & Navigation",
+      "description": "Subtle top compass bar showing cardinal directions, map pins, carts, beds, and custom waypoints."
+    },
+    {
+      "name": "Jötunn, the Valheim Library",
+      "package": "ValheimModding-Jotunn",
+      "version": "2.30.2",
+      "category": "Core",
+      "description": "Foundational modding framework providing custom item, piece, localization, and network sync APIs."
+    },
+    {
+      "name": "PlanBuild",
+      "package": "marcopogo-PlanBuild",
+      "version": "0.20.0",
+      "category": "Building",
+      "description": "Blueprint creation, transparent planning pieces, terrain tools, and collaborative multi-player base construction."
+    },
+    {
+      "name": "Quick Stack, Store, Sort, Trash, Restock",
+      "package": "Goldenrevolver-Quick_Stack_Store_Sort_Trash_Restock",
+      "version": "1.4.15",
+      "category": "Quality of Life",
+      "description": "1-key stacking of matching inventory items into nearby chests, container sorting, item favoriting, and quick restock."
+    },
+    {
+      "name": "XPortal",
+      "package": "SpikeHimself-XPortal",
+      "version": "1.2.25",
+      "category": "Teleportation",
+      "description": "Select any portal destination from an interactive map list without needing matching pair tags."
+    }
+  ]
+}
+EOF
+
+echo "Wrote manifest to ${MANIFEST_JSON}"
+echo "=========================================="

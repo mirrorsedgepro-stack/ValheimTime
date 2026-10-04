@@ -1,0 +1,12 @@
+[Unit]
+Description=Valheim Server Status Webhook Sync to Vercel
+After=network.target docker.service
+
+[Service]
+Type=oneshot
+User=jcee-slave
+Group=jcee-slave
+WorkingDirectory=/home/jcee-slave/Valheim
+ExecStart=/home/jcee-slave/Valheim/scripts/sync-status.sh
+StandardOutput=journal
+StandardError=journal
