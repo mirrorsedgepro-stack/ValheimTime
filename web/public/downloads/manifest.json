@@ -5,6 +5,8 @@
   "fileSize": "50M",
   "sha256": "709e73e824272e7fcc0a2469cf38b04840f7cb2a7b1a8f8f8ac30eec6a287885",
   "downloadPath": "/downloads/valheim-modpack.zip",
+  "r2modmanProfileCode": "01a106e1-b55d-b661-38b0-2e8305b8e3fb",
+  "r2modmanProfileFile": "/downloads/OdinsHall.r2z",
   "bepinexVersion": "5.4.23.3",
   "mods": [
     {

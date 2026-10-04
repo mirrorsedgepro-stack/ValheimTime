@@ -7,8 +7,8 @@ export const ModInstallation: React.FC = () => {
   const [activeMethod, setActiveMethod] = useState<"zip" | "r2modman">("zip");
   const [copiedCode, setCopiedCode] = useState(false);
 
-  // Profile code or export identifier for r2modman
-  const r2modmanProfileCode = "01925b90-odins-hall-v1";
+  // Verified active Thunderstore profile code
+  const r2modmanProfileCode = "01a106e1-b55d-b661-38b0-2e8305b8e3fb";
 
   const handleCopyProfile = () => {
     navigator.clipboard.writeText(r2modmanProfileCode);
@@ -135,25 +135,41 @@ export const ModInstallation: React.FC = () => {
         </div>
       ) : (
         <div className="mt-6 space-y-6">
-          {/* r2modman Profile Import */}
-          <div className="p-6 rounded-2xl bg-valheim-card border border-valheim-border">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <FolderArchive className="w-5 h-5 text-valheim-gold" />
-              Import via r2modman / Thunderstore Mod Manager
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              If you use a mod manager, you can import this profile code to automatically download and sync all 16 mods directly from the Thunderstore database.
-            </p>
+          {/* r2modman Profile Import Code & File */}
+          <div className="p-6 rounded-2xl bg-valheim-card border border-valheim-border space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <FolderArchive className="w-5 h-5 text-valheim-gold" />
+                  Import Profile (Code or File)
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                  Import this verified Thunderstore profile into r2modman or Thunderstore Mod Manager to auto-download and sync all 16 mods and configs in 1 click.
+                </p>
+              </div>
 
-            <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="flex-1 bg-valheim-bg border border-valheim-border rounded-lg px-4 py-3 font-mono text-sm text-amber-300 flex items-center justify-between">
-                <span>{r2modmanProfileCode}</span>
-                <span className="text-[10px] text-slate-500 font-sans uppercase">Profile Code</span>
+              <a
+                href="/downloads/OdinsHall.r2z"
+                download="OdinsHall.r2z"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-valheim-surface hover:bg-valheim-border text-slate-200 border border-valheim-border text-xs font-semibold shrink-0 transition-colors"
+                title="Download profile file for Import from File"
+              >
+                <Download className="w-4 h-4 text-valheim-gold" />
+                <span>Download OdinsHall.r2z</span>
+              </a>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex-1 bg-valheim-bg border border-valheim-gold/40 rounded-lg px-4 py-3 font-mono text-xs sm:text-sm text-amber-300 flex items-center justify-between overflow-x-auto">
+                <span className="tracking-wider select-all">{r2modmanProfileCode}</span>
+                <span className="text-[10px] text-emerald-400 font-sans uppercase font-bold ml-2 shrink-0 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  Verified Active
+                </span>
               </div>
 
               <button
                 onClick={handleCopyProfile}
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-valheim-gold hover:bg-valheim-goldLight text-slate-950 font-bold text-xs shadow-md transition-all active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-valheim-gold hover:bg-valheim-goldLight text-slate-950 font-bold text-xs shadow-md transition-all active:scale-95 shrink-0"
               >
                 {copiedCode ? (
                   <>
@@ -168,6 +184,9 @@ export const ModInstallation: React.FC = () => {
                 )}
               </button>
             </div>
+            <p className="text-[11px] text-slate-400">
+              In r2modman, select <strong>Import / Update &rarr; Import new profile &rarr; From code</strong> and paste the code above, or select <strong>From file</strong> and choose <code className="text-amber-300">OdinsHall.r2z</code>.
+            </p>
           </div>
 
           {/* Step by step r2modman */}
